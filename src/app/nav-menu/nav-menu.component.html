@@ -1,0 +1,15 @@
+<div class="card w-40 h-full flex">
+  <p-menu [model]="items" styleClass="h-full ">
+    <ng-template pTemplate="start">
+      <h1 class="p-2 text-center font-bold">
+        <span class="text-4xl font-bold">日本語</span>
+        <span class="text-xl font-normal"> Library</span>
+      </h1>
+    </ng-template>
+    <ng-template pTemplate="item" let-item>
+      <a [routerLink]="item.route" class="flex align-items-center p-menuitem-link">
+        <p class="ml-2">{{ item.label }}</p>
+      </a>
+  </ng-template>
+  </p-menu>
+</div>

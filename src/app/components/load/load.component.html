@@ -1,0 +1,16 @@
+<div class="h-full flex flex-col items-center justify-center">
+  <p-card [style]="{ width: '360px'}">
+    <ng-template pTemplate="title">
+      <h1 class="p-2 text-center font-bold">
+        <span class="text-4xl font-bold">日本語</span>
+        <span class="text-xl font-normal"> Library</span>
+      </h1>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="flex gap-3 mt-1">
+        <p-button label="New" class="w-full" styleClass="w-full" (onClick)="loadNewLibrary()"/>
+        <p-button label="Load" class="w-full" styleClass="w-full" />
+      </div>
+    </ng-template>
+  </p-card>
+</div>

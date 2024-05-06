@@ -1,8 +1,8 @@
-<section class="min-h-screen flex flex-col"> 
-  <div class="flex flex-row flex-grow">  
-    <app-nav-menu/> 
-    <div class="flex flex-grow justify-center">
-      <router-outlet></router-outlet>
-    </div>
+<section class="min-h-screen flex flex-row">
+  <div *ngIf="loaded" class="flex-initial">
+    <app-nav-menu></app-nav-menu>
+  </div>
+  <div class="flex-grow">
+    <router-outlet></router-outlet>
   </div>
 </section>

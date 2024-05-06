@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { invoke } from "@tauri-apps/api/tauri";
-import { open, save } from '@tauri-apps/api/dialog';
+import { LibraryService } from './services/library.service';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +12,19 @@ import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  greetingMessage = "";
+export class AppComponent implements OnDestroy {
+  
+  private loadedLibrarySubscription: Subscription;
+  loaded: boolean = false;
 
-  greet(event: SubmitEvent, name: string): void {
-    event.preventDefault();
-
-    invoke<string>("greet", { name }).then((text) => {
-      this.greetingMessage = text;
-    });
+  constructor(private libraryService: LibraryService) {  
+    this.loadedLibrarySubscription = this.libraryService.libraryLoaded.subscribe(isLoaded => {
+      this.loaded = isLoaded;
+    })
   }
+
+  ngOnDestroy(): void {
+    this.loadedLibrarySubscription.unsubscribe();
+  }
+
 }

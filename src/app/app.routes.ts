@@ -3,12 +3,18 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { PhraseLibraryComponent } from "./components/phrase-library/phrase-library.component";
 import { JapaneseCharactersComponent } from "./components/japanese-characters/japanese-characters.component";
 import { SettingsComponent } from "./components/settings/settings.component";
+import { LoadComponent } from "./components/load/load.component";
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: "/dashboard",
+    redirectTo: "/load",
     pathMatch: "full"
+  },
+  {
+    path: 'load',
+    component: LoadComponent,
+    title: "Load"
   },
   {
     path: 'dashboard',

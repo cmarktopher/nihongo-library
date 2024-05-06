@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { invoke } from "@tauri-apps/api/tauri";
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { open, save } from '@tauri-apps/api/dialog';
+import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 
 @Component({
   selector: 'app-root',

@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { PhraseLibraryComponent } from "./phrase-library/phrase-library.component";
-import { JapaneseCharactersComponent } from "./japanese-characters/japanese-characters.component";
-import { SettingsComponent } from "./settings/settings.component";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { PhraseLibraryComponent } from "./components/phrase-library/phrase-library.component";
+import { JapaneseCharactersComponent } from "./components/japanese-characters/japanese-characters.component";
+import { SettingsComponent } from "./components/settings/settings.component";
 
 export const routes: Routes = [
   {

@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, Router } from '@angular/router';
-import { LibraryService } from './services/library.service';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LibraryService } from '@services/library.service';
+import { NavMenuComponent } from '@components/nav-menu/nav-menu.component';
+
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnDestroy {
   
-  private loadedLibrarySubscription: Subscription;
+  private loadedLibrarySubscription: Subscription = new Subscription();
   loaded: boolean = false;
 
   constructor(private libraryService: LibraryService) {  

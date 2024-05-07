@@ -1,0 +1,8 @@
+<div class="grid grid-cols-6 gap-4">
+  <div *ngFor="let item of katakanaItems" class="card bg-base-200 shadow-xl">
+    <div class="card-body flex flex-col justify-center items-center">
+      <h2 class="card-title">{{ item.katakana }}</h2>
+      <p>{{ item.english }}</p>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { open, save } from '@tauri-apps/api/dialog';
-import { LibraryService } from '../../services/library.service';
 import { Subscription } from 'rxjs';
+import { open, save } from '@tauri-apps/api/dialog';
+import { LibraryService } from '@services/library.service';
 
 @Component({
   selector: 'app-load',

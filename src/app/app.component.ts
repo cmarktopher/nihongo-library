@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { LibraryService } from './services/library.service';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet,  NavMenuComponent],
+  imports: [CommonModule, RouterOutlet, NavMenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,15 +1,17 @@
-<div class="card h-full flex">
-  <p-menu [model]="items" styleClass="h-full ">
-    <ng-template pTemplate="start">
-      <h1 class="p-2 text-center font-bold">
-        <span class="text-4xl font-bold">日本語</span>
-        <span class="text-xl font-normal"> Library</span>
-      </h1>
-    </ng-template>
-    <ng-template pTemplate="item" let-item>
-      <a [routerLink]="item.route" class="flex align-items-center p-menuitem-link">
-        <p class="ml-2">{{ item.label }}</p>
-      </a>
-  </ng-template>
-  </p-menu>
-</div>
+<ul class="menu bg-base-200 w-56 rounded-box h-full">
+  <li class="menu-title">      
+    <h1 class="p-2 text-center font-bold">
+      <span class="text-4xl font-bold">日本語</span>
+      <span class="text-xl font-normal"> Library</span>
+    </h1>
+  </li>
+  <li>
+    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+  </li>
+  <li>
+    <a routerLink="/phrase-library" routerLinkActive="active">Phrase Library</a>
+  </li>
+  <li>
+    <a routerLink="/japanese-characters" routerLinkActive="active">Japanese Characters</a>
+  </li>
+</ul>

@@ -8,6 +8,7 @@ import { HiraganaComponent } from "@components/japanese-characters/hiragana/hira
 import { KatakanaComponent } from "@components/japanese-characters/katakana/katakana.component";
 import { KanjiComponent } from "@components/japanese-characters/kanji/kanji.component";
 import { EntryComponent } from "@components/entry/entry.component";
+import { PhraseComponent } from "@components/phrase-library/phrase/phrase.component";
 
 export const routes: Routes = [
   {
@@ -34,6 +35,11 @@ export const routes: Routes = [
     path: 'phrase-library',
     component: PhraseLibraryComponent,
     title: "Phrase Library"
+  },
+  {
+    path: 'phrase/:id',
+    component: PhraseComponent,
+    title: "Phrase"
   },
   {
     path: 'japanese-characters',

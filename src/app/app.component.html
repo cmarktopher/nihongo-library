@@ -1,7 +1,9 @@
 <section class="min-h-screen flex flex-row h-screen">
-  <div *ngIf="loaded" class="flex-initial">
-    <app-nav-menu></app-nav-menu>
-  </div>
+  @if(loaded){
+    <div class="flex-initial">
+      <app-nav-menu></app-nav-menu>
+    </div>
+  }
   <div class="flex-grow">
     <router-outlet></router-outlet>
   </div>

@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Hiragana } from "@models/Hiragana";
 import { Katakana } from '@models/Katakana';
+import { Phrase } from '@models/Phrase';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,9 @@ export class LibraryService  {
 
   private _katakanaItems = new BehaviorSubject<Katakana[]>([]);
   readonly katakanaItems: Observable<Katakana[]> = this._katakanaItems.asObservable();
+
+  private _phraseItems = new BehaviorSubject<Phrase[]>([]);
+  readonly phraseItems: Observable<Phrase[]> = this._phraseItems.asObservable();
 
   constructor() {
     
@@ -84,5 +88,27 @@ export class LibraryService  {
     } catch (error) {
       throw new Error("Failed to get katakana!");
     }
+  }
+
+  async getPhrases() {
+    try {
+      
+      const fetchResult: Object[] = await invoke('get_phrase_entries',  { path: this.databasePath });
+      console.log(this.databasePath)
+      if (fetchResult) {
+        const phrasesArray = fetchResult.map((item: any) => Phrase.fromJson(item));
+        this._phraseItems.next(phrasesArray); 
+      }
+      
+    } catch (error) {
+      throw new Error("Failed to get phrases!");
+    }
+  }
+
+  async getPhrase(id: number): Promise<Phrase | undefined> {
+    const phrases = this._phraseItems.getValue();
+    const phrase = phrases.find(p => p.id === id);
+    console.log(id)
+    return phrase;
   }
 }

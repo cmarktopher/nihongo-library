@@ -136,6 +136,37 @@ fn seed_database_with_katakana(csv_data: String, path: &str) -> Result<()> {
   Ok(())
 }
 
+fn seed_database_with_phrases(csv_data: String, path: &str) -> Result<()> {
+  let mut conn = connect_to_database(path)?;
+
+  let mut reader = ReaderBuilder::new().from_reader(csv_data.as_bytes());
+
+  let transaction = conn.transaction()?;
+
+  for result in reader.records() { 
+    match result {
+      Ok(record) => {
+
+        transaction.execute(
+          "INSERT INTO phrase (japanese_phrase, romaji, english_translation) VALUES (?1, ?2, ?3)",
+          rusqlite::params![
+              record.get(0).unwrap(),
+              record.get(1).unwrap(),
+              record.get(2).unwrap(),
+          ]
+       )?;  
+      }
+      Err(err)=> {
+        eprintln!("Error processing CSV record: {}", err); 
+      }
+    }
+  }
+  
+  transaction.commit()?;
+
+  Ok(())
+}
+
 fn initialize_new_database(path: &str) -> Result<(), Box<dyn Error>> {
 
   // Database initialization.
@@ -156,6 +187,14 @@ fn initialize_new_database(path: &str) -> Result<(), Box<dyn Error>> {
     seed_database_with_katakana(csv_data, path)?;
     println!("Successfully seeded database with katakana.");
   }
+
+    // Check and seed "phrases"
+    if is_table_empty("phrase", path)? {
+      let csv_path = Path::new("./data/phrases.csv");
+      let csv_data = load_csv(csv_path)?;
+      seed_database_with_phrases(csv_data, path)?;
+      println!("Successfully seeded database with phrases.");
+    }
 
   Ok(())
 }
@@ -224,7 +263,7 @@ struct Phrase {
     japanese_phrase: String,
     romaji: String,
     english_translation: String,
-    breakdown: String,
+    breakdown: Option<String>,
 }
 
 #[tauri::command]
@@ -245,6 +284,7 @@ fn get_phrase_entries(path: &str) -> Result<Vec<Phrase>, String> {
   }).map_err(|e| e.to_string())?;
 
   let entries: Vec<Phrase> = rows.filter_map(|r| r.ok()).collect();
+
   Ok(entries)
 }
 

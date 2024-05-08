@@ -1,1 +1,18 @@
-<p>phrase-library works!</p>
+<div class="mx-auto p-5 flex flex-col gap-5 h-full relative">
+  <h2 class="text-4xl text-center">Phrases</h2>
+  <div class="divider"></div> 
+  <div class="flex flex-col gap-5 overflow-y-auto">
+    @for (item of phraseItems; track $index) {
+      <div class="card bg-base-200 shadow-xl">
+        <button (click)="goToDetailedPhrase(item.id)">
+          <div class="card-body flex flex-col justify-center items-center">
+            <h2 class="card-title">{{ item.japanesePhrase }}</h2>
+            <p class="text-sm font-semibold text-gray-600">{{ item.romaji }}</p>
+            <p class="mt-5">{{ item.englishTranslation }}</p>
+          </div>
+        </button>
+      </div>
+    }
+  </div>
+  <button class="btn btn-active btn-circle fixed bottom-5 right-5 btn-primary" (click)="addNewPhrase()">Add</button>
+</div>

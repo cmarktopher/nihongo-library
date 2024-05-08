@@ -1,10 +1,12 @@
-<div class="mx-auto p-5 flex flex-col gap-5 h-full" >
+<div class="mx-auto p-5 flex flex-col h-full" >
+  <h2 class="text-4xl text-center">Characters</h2>
+  <div class="divider"></div> 
   <div role="tablist" class="tabs tabs-boxed">
     <a role="tab" routerLink="hiragana" routerLinkActive="tab-active" class="tab">Hiragana</a>
     <a role="tab" routerLink="katakana" routerLinkActive="tab-active" class="tab">Katakana</a>
     <a role="tab" routerLink="kanji" routerLinkActive="tab-active" class="tab">Kanji</a>
   </div>
-  <div class="flex-grow overflow-hidden">
+  <div class="mt-5 flex-grow overflow-hidden">
     <router-outlet></router-outlet>
   </div>
 </div>

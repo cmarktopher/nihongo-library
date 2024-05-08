@@ -7,12 +7,18 @@ import { LoadComponent } from "@components/load/load.component";
 import { HiraganaComponent } from "@components/japanese-characters/hiragana/hiragana.component";
 import { KatakanaComponent } from "@components/japanese-characters/katakana/katakana.component";
 import { KanjiComponent } from "@components/japanese-characters/kanji/kanji.component";
+import { EntryComponent } from "@components/entry/entry.component";
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: "/load",
+    redirectTo: "/entry",
     pathMatch: "full"
+  },
+  {
+    path: 'entry',
+    component: EntryComponent,
+    title: "Entry"
   },
   {
     path: 'load',

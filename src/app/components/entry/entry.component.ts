@@ -1,21 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { open, save } from '@tauri-apps/api/dialog';
 import { LibraryService } from '@services/library.service';
 
 @Component({
-  selector: 'app-load',
+  selector: 'app-entry',
   standalone: true,
   imports: [],
-  templateUrl: './load.component.html',
-  styleUrl: './load.component.css'
+  templateUrl: './entry.component.html',
+  styleUrl: './entry.component.css'
 })
-export class LoadComponent {
+export class EntryComponent implements OnDestroy{
 
+  private loadedLibrarySubscription: Subscription;
 
   constructor(private router: Router, private libraryService: LibraryService) {
 
+    this.loadedLibrarySubscription = this.libraryService.libraryLoaded.subscribe(isLoaded => {
+      if (isLoaded) {
+        this.router.navigate(['/dashboard']);
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.loadedLibrarySubscription.unsubscribe();
   }
 
   async loadNewLibrary() {

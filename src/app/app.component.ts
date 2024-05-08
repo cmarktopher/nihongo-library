@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LibraryService } from '@services/library.service';
 import { NavMenuComponent } from '@components/nav-menu/nav-menu.component';
@@ -18,7 +18,7 @@ export class AppComponent implements OnDestroy {
   private loadedLibrarySubscription: Subscription = new Subscription();
   loaded: boolean = false;
 
-  constructor(private libraryService: LibraryService) {  
+  constructor(private router: Router, private libraryService: LibraryService) {  
     this.loadedLibrarySubscription = this.libraryService.libraryLoaded.subscribe(isLoaded => {
       this.loaded = isLoaded;
     })

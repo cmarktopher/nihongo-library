@@ -10,23 +10,23 @@ use tauri::api::path::data_dir;
 use std::error::Error;
 use serde_json::{Map, Value};
 
-fn connect_to_database() -> Result<Connection, rusqlite::Error> {
+fn connect_to_database(path: &str) -> Result<Connection, rusqlite::Error> {
 
-  let config_dir = data_dir().expect("Failed to get config dir!");
-  let config_path = config_dir.join("db_config.json");
+  // let config_dir = data_dir().expect("Failed to get config dir!");
+  // let config_path = config_dir.join("db_config.json");
 
-  let config: Value = serde_json::from_str(&fs::read_to_string(config_path).unwrap()).unwrap();
-  let db_path = config["database_path"].as_str().unwrap_or("default_path.sqlite3");
+  // let config: Value = serde_json::from_str(&fs::read_to_string(config_path).unwrap()).unwrap();
+  // let db_path = config["database_path"].as_str().unwrap_or("default_path.sqlite3");
 
-  let conn = Connection::open(db_path)?;
+  let conn = Connection::open(path)?;
 
   Ok(conn)
 }
 
-fn create_tables_in_database() -> Result<()> {
+fn create_tables_in_database(path: &str) -> Result<()> {
 
   // Create a connection.
-  let conn = connect_to_database()?;
+  let conn = connect_to_database(path)?;
 
   // Create tables if needed.
   conn.execute(
@@ -71,8 +71,8 @@ fn load_csv(csv_path: &Path) -> Result<String, String>{
   Ok(csv_data)
 }
 
-fn is_table_empty( table_name: &str) -> Result<bool, rusqlite::Error> {
-  let conn = connect_to_database()?;
+fn is_table_empty( table_name: &str, path: &str) -> Result<bool, rusqlite::Error> {
+  let conn = connect_to_database(path)?;
 
   let query = format!("SELECT COUNT(*) FROM {}", table_name);
 
@@ -82,8 +82,8 @@ fn is_table_empty( table_name: &str) -> Result<bool, rusqlite::Error> {
   Ok(count == 0)
 }
 
-fn seed_database_with_hiragana(csv_data: String) -> Result<()> {
-  let mut conn = connect_to_database()?;
+fn seed_database_with_hiragana(csv_data: String, path: &str) -> Result<()> {
+  let mut conn = connect_to_database(path)?;
 
   let mut reader = ReaderBuilder::new().from_reader(csv_data.as_bytes());
 
@@ -109,8 +109,8 @@ fn seed_database_with_hiragana(csv_data: String) -> Result<()> {
   Ok(())
 }
 
-fn seed_database_with_katakana(csv_data: String) -> Result<()> {
-  let mut conn = connect_to_database()?;
+fn seed_database_with_katakana(csv_data: String, path: &str) -> Result<()> {
+  let mut conn = connect_to_database(path)?;
 
   let mut reader = ReaderBuilder::new().from_reader(csv_data.as_bytes());
 
@@ -136,24 +136,24 @@ fn seed_database_with_katakana(csv_data: String) -> Result<()> {
   Ok(())
 }
 
-fn initialize_new_database() -> Result<(), Box<dyn Error>> {
+fn initialize_new_database(path: &str) -> Result<(), Box<dyn Error>> {
 
   // Database initialization.
-  create_tables_in_database()?;
+  create_tables_in_database(path)?;
 
   // Check and seed "hiragana"
-  if is_table_empty("hiragana")? {
+  if is_table_empty("hiragana", path)? {
     let csv_path = Path::new("./data/hiragana.csv");
     let csv_data = load_csv(csv_path)?;
-    seed_database_with_hiragana(csv_data)?;
+    seed_database_with_hiragana(csv_data, path)?;
     println!("Successfully seeded database with hiragana.");
   }
 
   // Check and seed "katakana"
-  if is_table_empty("katakana")? {
+  if is_table_empty("katakana", path)? {
     let csv_path = Path::new("./data/katakana.csv");
     let csv_data = load_csv(csv_path)?;
-    seed_database_with_katakana(csv_data)?;
+    seed_database_with_katakana(csv_data, path)?;
     println!("Successfully seeded database with katakana.");
   }
 
@@ -163,19 +163,7 @@ fn initialize_new_database() -> Result<(), Box<dyn Error>> {
 #[tauri::command]
 fn create_new_database(new_path: String) -> Result<(), String> {
   
-  let config_dir = data_dir().expect("Failed to get config dir!");
-  let config_path = config_dir.join("db_config.json");
-
-  let mut db_config: Map<String, Value> = match fs::read_to_string(&config_path) {
-      Ok(contents) => serde_json::from_str(&contents).map_err(|e| e.to_string())?,
-      Err(_) => Map::new(),
-  };
-
-  db_config.insert("database_path".to_string(), new_path.into());
-  fs::write(config_path, serde_json::to_string(&db_config).map_err(|e| e.to_string())?)
-      .map_err(|e| e.to_string())?;
-
-  initialize_new_database().map_err(|e| e.to_string())?;
+  initialize_new_database(&new_path).map_err(|e| e.to_string())?;
 
   Ok(())
 }
@@ -188,8 +176,8 @@ struct HiraganaEntry {
 }
 
 #[tauri::command]
-fn get_hiragana_entries() -> Result<Vec<HiraganaEntry>, String> {
-  let conn = connect_to_database().map_err(|e| e.to_string())?;
+fn get_hiragana_entries(path: &str) -> Result<Vec<HiraganaEntry>, String> {
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
 
   let mut stmt = conn.prepare("SELECT id, hiragana, english FROM hiragana").map_err(|e| e.to_string())?;
 
@@ -213,8 +201,8 @@ struct KatakanaEntry {
 }
 
 #[tauri::command]
-fn get_katakana_entries() -> Result<Vec<KatakanaEntry>, String> {
-  let conn = connect_to_database().map_err(|e| e.to_string())?;
+fn get_katakana_entries(path: &str) -> Result<Vec<KatakanaEntry>, String> {
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
 
   let mut stmt = conn.prepare("SELECT id, katakana, english FROM katakana").map_err(|e| e.to_string())?;
 
@@ -240,8 +228,8 @@ struct Phrase {
 }
 
 #[tauri::command]
-fn get_phrase_entries() -> Result<Vec<Phrase>, String> {
-  let conn = connect_to_database().map_err(|e| e.to_string())?;
+fn get_phrase_entries(path: &str) -> Result<Vec<Phrase>, String> {
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
 
   let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown FROM phrase")
     .map_err(|e| e.to_string())?;
@@ -261,8 +249,8 @@ fn get_phrase_entries() -> Result<Vec<Phrase>, String> {
 }
 
 #[tauri::command]
-fn insert_phrase(phrase_data: Phrase) -> Result<Phrase, String>{
-  let conn = connect_to_database().map_err(|e| e.to_string())?;
+fn insert_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
 
   conn.execute(
     "INSERT INTO phrase (japanese_phrase, romaji, english_translation, breakdown) VALUES (?1, ?2, ?3, ?4)",

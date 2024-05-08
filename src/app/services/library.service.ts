@@ -58,7 +58,7 @@ export class LibraryService  {
 
     try {
       
-      const fetchResult: Object[] = await invoke('get_hiragana_entries');
+      const fetchResult: Object[] = await invoke('get_hiragana_entries', { path: this.databasePath });
 
       if (fetchResult) {
         const hiraganaArray = fetchResult.map((item: any) => Hiragana.fromJson(item));
@@ -74,7 +74,7 @@ export class LibraryService  {
 
     try {
       
-      const fetchResult: Object[] = await invoke('get_katakana_entries');
+      const fetchResult: Object[] = await invoke('get_katakana_entries',  { path: this.databasePath });
 
       if (fetchResult) {
         const katakanaArray = fetchResult.map((item: any) => Katakana.fromJson(item));

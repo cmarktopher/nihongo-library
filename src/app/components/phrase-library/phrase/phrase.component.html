@@ -1,5 +1,5 @@
-<div class="p-5 h-full flex flex-col gap-5 items-center">
-  @if(id !== '-1' && phrase !== null) {
+<div class="p-5 h-full flex flex-col gap-5 relative items-center overflow-y-auto">
+  @if(phrase !== null && editMode === false ) {
     <h3 class="text-4xl font-bold">{{ phrase.japanesePhrase }}</h3>
     <p class="text-md font-semibold text-gray-600">{{ phrase.romaji }}</p>
     <p class="text-2xl font-bold">{{ phrase.englishTranslation }}</p>
@@ -10,29 +10,50 @@
         </div>
       </div>
     }
+    <div class="fixed bottom-5 right-5 flex flex-col gap-2">
+      <button class="btn btn-active btn-circle  btn-primary" (click)="editPhrase()">Edit</button>
+      <button class="btn btn-active btn-circle  btn-error" (click)="deletePhrase()">Delete</button>
+    </div>
   }
   @else {
     <h3 class="text-4xl font-bold">New Phrase</h3>
-    <label class="form-control w-full max-w-xs">
+    <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Japanese Phrase</span>
       </div>
       <div class="flex flex-row gap-2">
-        <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" [(ngModel)]="newPhrase.japanesePhrase"/>
+        <input type="text" placeholder="今日はとてもいい天気ですね..." class="input input-bordered w-full" [(ngModel)]="newPhrase.japanesePhrase"/>
         <button class="btn btn-neutral" (click)="useAiToPopulatePhrase()">Use AI to Fill</button>
       </div>
     </label>
-    <label class="form-control w-full max-w-xs">
+    <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Romanji</span>
       </div>
-      <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+      <input type="text" placeholder="kyou wa totemo ii tenki desu ne..." class="input input-bordered w-full" [(ngModel)]="newPhrase.romaji"/>
     </label>
-    <label class="form-control w-full max-w-xs">
+    <label class="form-control w-full">
       <div class="label">
         <span class="label-text">Translation</span>
       </div>
-      <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+      <input type="text" class="input input-bordered w-full" placeholder="The weather is very nice today..." [(ngModel)]="newPhrase.englishTranslation"/>
     </label>
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Breakdown</span>
+      </div>
+      <div class="flex flex-col gap-2">
+        @for (item of newPhrase.breakdown; track $index) {
+          <textarea class="textarea textarea-bordered" [(ngModel)]="newPhrase.breakdown[$index]"></textarea>
+        }
+      </div>
+      <button class="mt-2 btn btn-neutral" (click)="addNewBreakdown()">Add New Breakdown</button>
+    </label>
+    @if (editMode) {
+      <button class="btn btn-active btn-circle fixed bottom-5 right-5 btn-primary" (click)="updatePhrase()">Save</button>
+    }
+    @else {
+      <button class="btn btn-active btn-circle fixed bottom-5 right-5 btn-primary" (click)="addNewPhrase()">Add</button>
+    }
   }
 </div>

@@ -94,13 +94,14 @@ export class LibraryService  {
     try {
       
       const fetchResult: Object[] = await invoke('get_phrase_entries',  { path: this.databasePath });
-      console.log(this.databasePath)
+
       if (fetchResult) {
         const phrasesArray = fetchResult.map((item: any) => Phrase.fromJson(item));
         this._phraseItems.next(phrasesArray); 
       }
       
     } catch (error) {
+
       throw new Error("Failed to get phrases!");
     }
   }
@@ -108,7 +109,76 @@ export class LibraryService  {
   async getPhrase(id: number): Promise<Phrase | undefined> {
     const phrases = this._phraseItems.getValue();
     const phrase = phrases.find(p => p.id === id);
-    console.log(id)
     return phrase;
+  }
+
+  async addPhrase(newPhrase: Phrase): Promise<Phrase | undefined> {
+    
+    let phraseAsJson: any = newPhrase.toJson();
+
+    try {
+
+      const fetchResult: Object[] = await invoke('insert_phrase',  { phraseData: phraseAsJson, path: this.databasePath });
+
+      let newReturnedPhrase = Phrase.fromJson(fetchResult);
+      let phrases = this._phraseItems.getValue();
+      phrases.push(newReturnedPhrase);
+      this._phraseItems.next(phrases); 
+
+      return newReturnedPhrase;
+
+    } catch (error) {
+      console.log(`Failed to add new phrase with error: ${error}`);
+      throw new Error();
+    }
+  }
+
+  async updatePhrase(updatedPhrase: Phrase): Promise<Phrase | undefined> {
+    
+    let phraseAsJson: any = updatedPhrase.toJson();
+
+    try {
+
+      const fetchResult: Object[] = await invoke('update_phrase',  { phraseData: phraseAsJson, path: this.databasePath });
+
+      let updatedReturnedPhrase = Phrase.fromJson(fetchResult);
+
+      const phrases = this._phraseItems.getValue();
+      let phrase = phrases.find(p => p.id === updatedReturnedPhrase.id);
+
+      if (phrase) {
+        phrase.updateProperties(
+          updatedReturnedPhrase.id,
+          updatedReturnedPhrase.japanesePhrase,
+          updatedReturnedPhrase.romaji,
+          updatedReturnedPhrase.englishTranslation,
+          updatedReturnedPhrase.breakdown as string[]
+        )
+
+        this._phraseItems.next(phrases); 
+        return phrase;
+      }
+
+      return undefined;
+      
+    } catch (error) {
+      console.log(`Failed to update phrase with error: ${error}`);
+      throw new Error();
+    }
+  }
+
+  async deletePhrase(phraseToDelete: Phrase) {
+    try {
+
+      await invoke('delete_phrase',  { id: phraseToDelete.id, path: this.databasePath });
+
+      const phrases = this._phraseItems.getValue();
+      let updatedPhrases = phrases.filter((item: Phrase) => item.id !== phraseToDelete.id);
+      this._phraseItems.next(updatedPhrases);
+      
+    } catch (error) {
+      console.log(`Failed to delete phrase with error: ${error}`);
+      throw new Error();
+    }
   }
 }

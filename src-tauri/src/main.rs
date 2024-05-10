@@ -314,6 +314,49 @@ fn insert_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
   Ok(phrase)
 }
 
+#[tauri::command]
+fn update_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
+
+  conn.execute(
+    "UPDATE phrase SET japanese_phrase = ?1, romaji = ?2, english_translation = ?3, breakdown = ?4 WHERE id = ?5",
+    params![
+        phrase_data.japanese_phrase, 
+        phrase_data.romaji, 
+        phrase_data.english_translation, 
+        phrase_data.breakdown,
+        phrase_data.id 
+    ],
+  ).map_err(|e| e.to_string())?;
+
+  let id: i32 = phrase_data.id;
+
+  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown FROM phrase WHERE id = ?1").map_err(|e| e.to_string())?;
+
+  let phrase = stmt.query_row(params![id], |row| {
+    Ok(Phrase {
+        id: row.get(0)?,
+        japanese_phrase: row.get(1)?,
+        romaji: row.get(2)?,
+        english_translation: row.get(3)?,
+        breakdown: row.get(4)?
+    })
+  }).map_err(|e| e.to_string())?;
+
+  Ok(phrase)
+
+}
+
+#[tauri::command]
+fn delete_phrase(id: i32, path: &str) -> Result<(), String> {
+  let conn = connect_to_database(path).map_err(|e| e.to_string())?;
+
+  conn.execute("DELETE FROM phrase WHERE id = ?1", params![id])
+      .map_err(|e| e.to_string())?; 
+
+  Ok(()) 
+}
+
 fn main() -> Result<()> {
   
   // Interface with the frontend
@@ -321,7 +364,7 @@ fn main() -> Result<()> {
     .invoke_handler(tauri::generate_handler![
       create_new_database,
       get_hiragana_entries, get_katakana_entries, 
-      get_phrase_entries, insert_phrase])
+      get_phrase_entries, insert_phrase, update_phrase, delete_phrase])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 

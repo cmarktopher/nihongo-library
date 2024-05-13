@@ -1,14 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{fs, path::Path};
+use std::path::Path;
 use std::fs::read_to_string;
 use csv::ReaderBuilder;
 use rusqlite::{Connection, Result, params};
 use serde::{Deserialize, Serialize};
-use tauri::api::path::data_dir;
 use std::error::Error;
-use serde_json::{Map, Value};
 
 fn connect_to_database(path: &str) -> Result<Connection, rusqlite::Error> {
 
@@ -53,7 +51,8 @@ fn create_tables_in_database(path: &str) -> Result<()> {
       japanese_phrase TEXT,
       romaji TEXT,
       english_translation TEXT,
-      breakdown TEXT
+      breakdown TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )",
     []
   )?;
@@ -264,13 +263,14 @@ struct Phrase {
     romaji: String,
     english_translation: String,
     breakdown: Option<String>,
+    created_at: Option<String>
 }
 
 #[tauri::command]
 fn get_phrase_entries(path: &str) -> Result<Vec<Phrase>, String> {
   let conn = connect_to_database(path).map_err(|e| e.to_string())?;
 
-  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown FROM phrase")
+  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown, created_at FROM phrase")
     .map_err(|e| e.to_string())?;
 
   let rows = stmt.query_map([], |row| {
@@ -280,6 +280,7 @@ fn get_phrase_entries(path: &str) -> Result<Vec<Phrase>, String> {
         romaji: row.get(2)?,
         english_translation: row.get(3)?,
         breakdown: row.get(4)?,
+        created_at: row.get(5)?,
     })
   }).map_err(|e| e.to_string())?;
 
@@ -299,7 +300,7 @@ fn insert_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
 
   let id: i64 = conn.last_insert_rowid();
 
-  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown FROM phrase WHERE id = ?1").map_err(|e| e.to_string())?;
+  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown, created_at FROM phrase WHERE id = ?1").map_err(|e| e.to_string())?;
 
   let phrase = stmt.query_row(params![id], |row| {
     Ok(Phrase {
@@ -307,7 +308,8 @@ fn insert_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
         japanese_phrase: row.get(1)?,
         romaji: row.get(2)?,
         english_translation: row.get(3)?,
-        breakdown: row.get(4)?
+        breakdown: row.get(4)?,
+        created_at: row.get(5)?,
     })
   }).map_err(|e| e.to_string())?;
 
@@ -331,7 +333,7 @@ fn update_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
 
   let id: i32 = phrase_data.id;
 
-  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown FROM phrase WHERE id = ?1").map_err(|e| e.to_string())?;
+  let mut stmt = conn.prepare("SELECT id, japanese_phrase, romaji, english_translation, breakdown, created_at FROM phrase WHERE id = ?1").map_err(|e| e.to_string())?;
 
   let phrase = stmt.query_row(params![id], |row| {
     Ok(Phrase {
@@ -339,7 +341,8 @@ fn update_phrase(phrase_data: Phrase, path: &str) -> Result<Phrase, String>{
         japanese_phrase: row.get(1)?,
         romaji: row.get(2)?,
         english_translation: row.get(3)?,
-        breakdown: row.get(4)?
+        breakdown: row.get(4)?,
+        created_at: row.get(5)?,
     })
   }).map_err(|e| e.to_string())?;
 

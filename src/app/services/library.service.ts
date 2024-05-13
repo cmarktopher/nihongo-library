@@ -134,7 +134,7 @@ export class LibraryService  {
     try {
 
       const fetchResult: Object[] = await invoke('insert_phrase',  { phraseData: phraseAsJson, path: this.databasePath });
-
+      console.log(fetchResult)
       let newReturnedPhrase = Phrase.fromJson(fetchResult);
       let phrases = this._phraseItems.getValue();
       phrases.push(newReturnedPhrase);

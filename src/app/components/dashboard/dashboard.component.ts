@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Phrase } from '@models/Phrase';
 import { LibraryService } from '@services/library.service';
@@ -37,4 +36,22 @@ export class DashboardComponent {
     
   }
 
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  }
+
+  getTodayPhrases(): Phrase[] {
+
+    return this.phraseItems.filter(phrase => {
+      if (phrase.createdAt){
+        const phraseDate = new Date(phrase.createdAt);
+        return this.isToday(phraseDate);
+      }
+      return false;
+    });
+  
+  }
 }

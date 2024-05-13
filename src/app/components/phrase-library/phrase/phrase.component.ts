@@ -24,7 +24,7 @@ export class PhraseComponent {
 
   @Input()
   set id(id: string) {
-    console.log(id)
+
     let handleGetPhrase = async () => {
 
       let foundPhrase = await this.libraryService.getPhrase(parseInt(id));
@@ -47,7 +47,7 @@ export class PhraseComponent {
   async addNewPhrase() {
     try {
       let returnedPhrase: Phrase | undefined = await this.libraryService.addPhrase(this.newPhrase);
-
+      
       if (returnedPhrase) {
         this.phrase = returnedPhrase;
         this.router.navigate(['/phrase', this.phrase.id]);

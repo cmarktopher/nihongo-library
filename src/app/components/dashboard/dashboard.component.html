@@ -1,10 +1,28 @@
-<div class="p-10 h-full flex flex-col items-center">
-  <div class="stats shadow">
-  
-    <div class="stat">
-      <div class="stat-title">Total Phrases</div>
-      <div class="stat-value  text-primary">{{ phraseItems.length }}</div>
+<div class="p-10 h-full flex flex-col items-center gap-20 overflow-y-auto">
+  <div>
+    <div class="stats shadow">
+      <div class="stat">
+        <div class="stat-title">Total Phrases</div>
+        <div class="stat-value  text-primary">{{ phraseItems.length }}</div>
+      </div> 
+      <div class="stat">
+        <div class="stat-title">Total Phrases Added Today</div>
+        <div class="stat-value  text-primary">{{ getTodayPhrases().length }}</div>
+      </div>
     </div>
-        
+  </div>
+  <div class="flex flex-col gap-5">
+    <h2 class="text-4xl text-center">Today's Phrases</h2>
+    <div class="grid grid-cols-2 gap-2">
+      @for (item of getTodayPhrases(); track $index) {
+        <div class="card bg-base-200 shadow-xl">
+          <div class="card-body flex flex-col justify-center items-center">
+            <h2 class="card-title">{{ item.japanesePhrase }}</h2>
+            <p class="text-sm font-semibold text-gray-600">{{ item.romaji }}</p>
+            <p class="mt-5">{{ item.englishTranslation }}</p>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

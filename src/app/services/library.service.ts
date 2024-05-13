@@ -58,6 +58,20 @@ export class LibraryService  {
     }
   }
 
+  async loadDatabase(path: string) {
+
+    try {
+
+      this.databasePath = path;
+      localStorage.setItem("databasePath", JSON.stringify(path));
+
+      this._libraryLoaded.next(true);
+    
+    } catch (error) {
+      console.log(`Failed to load database with error: ${error}`);
+    }
+  }
+
   async getHiragana() {
 
     try {
@@ -91,6 +105,7 @@ export class LibraryService  {
   }
 
   async getPhrases() {
+
     try {
       
       const fetchResult: Object[] = await invoke('get_phrase_entries',  { path: this.databasePath });

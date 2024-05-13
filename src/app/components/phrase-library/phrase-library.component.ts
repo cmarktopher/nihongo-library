@@ -21,6 +21,8 @@ export class PhraseLibraryComponent {
 
     async ngOnInit(): Promise<void> {
 
+      this.phraseItems = [];
+
       try {
 
         this.phraseItemsSubscription.add(this.libraryService.phraseItems.subscribe(items => {

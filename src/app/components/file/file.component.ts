@@ -5,22 +5,20 @@ import { open, save } from '@tauri-apps/api/dialog';
 import { LibraryService } from '@services/library.service';
 
 @Component({
-  selector: 'app-entry',
+  selector: 'app-file',
   standalone: true,
   imports: [],
-  templateUrl: './entry.component.html',
-  styleUrl: './entry.component.css'
+  templateUrl: './file.component.html',
+  styleUrl: './file.component.css'
 })
-export class EntryComponent implements OnDestroy {
+export class FileComponent implements OnDestroy {
 
   private loadedLibrarySubscription: Subscription;
 
   constructor(private router: Router, private libraryService: LibraryService) {
 
     this.loadedLibrarySubscription = this.libraryService.libraryLoaded.subscribe(isLoaded => {
-      if (isLoaded) {
-        this.router.navigate(['/dashboard']);
-      }
+
     })
   }
 

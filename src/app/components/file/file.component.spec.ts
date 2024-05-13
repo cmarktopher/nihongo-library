@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoadComponent } from './load.component';
+import { FileComponent } from './file.component';
 
-describe('LoadComponent', () => {
-  let component: LoadComponent;
-  let fixture: ComponentFixture<LoadComponent>;
+describe('FileComponent', () => {
+  let component: FileComponent;
+  let fixture: ComponentFixture<FileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoadComponent]
+      imports: [FileComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(LoadComponent);
+    fixture = TestBed.createComponent(FileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

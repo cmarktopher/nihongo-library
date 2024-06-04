@@ -9,6 +9,7 @@ import { KanjiComponent } from "@components/japanese-characters/kanji/kanji.comp
 import { EntryComponent } from "@components/entry/entry.component";
 import { PhraseComponent } from "@components/phrase-library/phrase/phrase.component";
 import { FileComponent } from "@components/file/file.component";
+import { MemoryCardsComponent } from "@components/memory-cards/memory-cards.component";
 
 export const routes: Routes = [
   {
@@ -30,6 +31,11 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     title: "Dashboard"
+  },
+  {
+    path: 'memory-cards',
+    component: MemoryCardsComponent,
+    title: "Memory"
   },
   {
     path: 'phrase-library',

@@ -1,1 +1,47 @@
-<p>memory-cards works!</p>
+<div class="mx-auto p-5 flex flex-col h-full" >
+  <h2 class="text-4xl text-center">Memory</h2>
+  <div class="divider"></div>
+  <div class="h-full flex flex-col items-center justify-center">
+    @if(started && phraseIndex < phraseItems.length) {
+      <div class="card bg-base-200 shadow-xl w-fit h-2/4">
+        <div class="card-body flex flex-col justify-center items-center">
+          @if (displayState === "Question") {
+            <h3 class="text-xl">{{ phraseItems[phraseIndex].japanesePhrase }}</h3>
+          }
+          @else if (displayState === "Answer") {
+            <h3 class="text-xl">{{ phraseItems[phraseIndex].englishTranslation }}</h3>
+          }
+        </div>
+        <div class="mb-2 card-actions justify-center">
+          @if (displayState === "Question") {
+            <button class="btn btn-primary" (click)="handleShowAnswer()">Show Answer</button>
+          }
+          @else if (displayState === "Answer") {
+            <button class="btn btn-primary" (click)="handleNextQuestion()">Next</button>
+          }
+        </div>
+      </div>
+    }
+    @else if (started && phraseIndex >= phraseItems.length) {
+      <div class="card bg-base-200 shadow-xl w-2/4 h-2/4">
+        <div class="card-body flex flex-col justify-center items-center">
+          <h3 class="text-xl">Finished Phrases</h3>
+        </div>
+        <div class="mb-2 card-actions justify-center">
+          <button class="btn btn-primary"(click)="startMemory()">Start Again</button>
+        </div>
+      </div>
+    }
+    @else {
+      <div class="card bg-base-200 shadow-xl w-2/4 h-2/4">
+        <div class="card-body flex flex-col justify-center items-center">
+          <h3 class="text-xl">Total Phrases</h3>
+          <p >{{ phraseItems.length }}</p>
+        </div>
+        <div class="mb-2 card-actions justify-center">
+          <button class="btn btn-primary"(click)="startMemory()">Start</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
